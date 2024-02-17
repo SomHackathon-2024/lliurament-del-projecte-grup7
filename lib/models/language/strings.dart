@@ -4,10 +4,22 @@ class AppStrings {
   static final Map<String, Map<String, String>> _localizedStrings = {
     'en': {
       'title': 'Home',
+      'style': 'Change style',
+      'name': 'Name',
+      'hintName': 'Introduce your username',
+      'password': 'Password',
+      'hintPassword': 'Introduce your password',
+      'login': 'Login',
       'go_to_display_screen': 'Go to Display Screen',
     },
     'es': {
       'title': 'Inicio',
+      'style': 'Cambiar estilo',
+      'name': 'Nombre',
+      'hintName': 'Introduce tu nombre',
+      'password': 'Contraseña',
+      'hintPassword': 'Introduce tu contraseña',
+      'login': 'Iniciar sesión',
       'go_to_display_screen': 'Ir a la pantalla de visualización',
     },
   };
