@@ -1,0 +1,14 @@
+screens
+    screen widgets, each one represents a screen or page of the application
+
+components
+    reusable UI components used across multiple screens
+
+models
+    data models to structure and represent data within the application
+
+services
+    api requests, database interactions
+
+utils
+    utility functions that can be used through the application
