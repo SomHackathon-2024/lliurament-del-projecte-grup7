@@ -53,7 +53,6 @@ class _HomeScreen extends State<HomeScreen> {
               decoration: BoxDecoration(
                 color: Color(0x00000000),
               ),
-              //height: MediaQuery.of(context).size.height * 0.2,
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: _ReturnLoginSignupWidget(
@@ -90,31 +89,11 @@ class _HomeScreen extends State<HomeScreen> {
                   child: Text('Spanish'),
                 ),
               ],
-              /*onChanged: (selectedLocale) {
-                Provider.of<ThemeProvider>(context, listen: false)
-                    .toggleLanguage(selectedLocale!);
-                print(AppStrings.getString(context, 'go_to_display_screen'));
-              },*/
               onChanged: (selectedLocale) {
                 Provider.of<ThemeProvider>(context, listen: false)
                     .toggleLanguage(selectedLocale!);
               },
             ),
-            /*RoundedBox(
-              child: Text(AppStrings.getString(
-                  Provider.of<ThemeProvider>(context).locale,
-                  'go_to_display_screen')),
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => DisplayScreen()),
-                );
-              },
-              child: Text('Go to Display Screen'),
-            ),*/
           ],
         ),
       ),
@@ -151,10 +130,6 @@ class _HomeScreen extends State<HomeScreen> {
           'login',
         ),
         function: () {
-          /*Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => DisplayScreen()),
-          );*/
           Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => DisplayScreen())
           );
