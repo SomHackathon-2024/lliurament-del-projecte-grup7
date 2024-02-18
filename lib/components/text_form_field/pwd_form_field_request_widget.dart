@@ -83,7 +83,7 @@ class _PswFormFieldRequest extends State<PswFormFieldRequest> {
       ),
       style: TextStyle(
         fontFamily: 'Lexend Deca',
-        color: Theme.of(context).colorScheme.onBackground,
+        color: Theme.of(context).colorScheme.primaryContainer,
         fontSize: 14,
         fontWeight: FontWeight.normal,
       ),

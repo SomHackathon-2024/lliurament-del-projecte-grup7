@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hack24/models/language/strings.dart';
+import 'package:hack24/models/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class BottomNavigation extends StatelessWidget {
   final int selectedIndex;
@@ -18,15 +21,24 @@ class BottomNavigation extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          label: 'Page 1',
+          label: AppStrings.getString(
+              Provider.of<ThemeProvider>(context).locale,
+              'title'
+          ),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.search),
-          label: 'Page 2',
+          label: AppStrings.getString(
+              Provider.of<ThemeProvider>(context).locale,
+              'search'
+          ),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
-          label: 'Page 3',
+          label: AppStrings.getString(
+              Provider.of<ThemeProvider>(context).locale,
+              'profile'
+          ),
         ),
       ],
     );

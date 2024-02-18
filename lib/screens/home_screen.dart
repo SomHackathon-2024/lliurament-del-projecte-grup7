@@ -3,6 +3,8 @@ import 'package:hack24/components/box/rounded_box.dart';
 import 'package:hack24/components/button/rounded_button.dart';
 import 'package:hack24/components/title_&_logo/title_and_logo_widget.dart';
 import 'package:hack24/models/language/strings.dart';
+import 'package:hack24/models/obj/user_data.dart';
+import 'package:hack24/services/get/login.dart';
 import 'package:hack24/widgets/login_widget.dart';
 import 'package:provider/provider.dart';
 import '../models/theme_provider.dart';
@@ -35,68 +37,67 @@ class _HomeScreen extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
-          physics: ClampingScrollPhysics(),
-          child:
-      Center(
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-            ),
-            TitleAndLogo(
-              textColor: Theme.of(context).colorScheme.primary,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Color(0x00000000),
+        physics: ClampingScrollPhysics(),
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.15,
               ),
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-              child: _ReturnLoginSignupWidget(
-                singIn,
+              TitleAndLogo(
+                textColor: Theme.of(context).colorScheme.primary,
               ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
-            ),
-            RoundedButton(
-              onTap: () {//padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10);
-                Provider.of<ThemeProvider>(context, listen: false)
-                    .toggleTheme();
-              },
-              color: Theme.of(context).colorScheme.secondary,
-              text: AppStrings.getString(
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0x00000000),
+                ),
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                child: _ReturnLoginSignupWidget(
+                  singIn,
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+              ),
+              RoundedButton(
+                onTap: () {
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .toggleTheme();
+                },
+                color: Theme.of(context).colorScheme.secondary,
+                text: AppStrings.getString(
                   Provider.of<ThemeProvider>(context).locale,
                   'style',
+                ),
+                textColor: Theme.of(context).colorScheme.surface,
               ),
-              textColor: Theme.of(context).colorScheme.surface,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.03,
-            ),
-            DropdownButton<Locale>(
-              value: Provider.of<ThemeProvider>(context).locale,
-              items: [
-                DropdownMenuItem(
-                  value: Locale('en'),
-                  child: Text('English'),
-                ),
-                DropdownMenuItem(
-                  value: Locale('es'),
-                  child: Text('Spanish'),
-                ),
-              ],
-              onChanged: (selectedLocale) {
-                Provider.of<ThemeProvider>(context, listen: false)
-                    .toggleLanguage(selectedLocale!);
-              },
-            ),
-          ],
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.03,
+              ),
+              DropdownButton<Locale>(
+                value: Provider.of<ThemeProvider>(context).locale,
+                items: [
+                  DropdownMenuItem(
+                    value: Locale('en'),
+                    child: Text('English'),
+                  ),
+                  DropdownMenuItem(
+                    value: Locale('es'),
+                    child: Text('Spanish'),
+                  ),
+                ],
+                onChanged: (selectedLocale) {
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .toggleLanguage(selectedLocale!);
+                },
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -129,10 +130,16 @@ class _HomeScreen extends State<HomeScreen> {
           Provider.of<ThemeProvider>(context).locale,
           'login',
         ),
-        function: () {
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => DisplayScreen())
-          );
+        function: () async {
+          var result = await login(nameController.text, pswController.text);
+          if (result.affectedRows == 1) {
+            dynamic row = result[0];
+            var id = row[0]; // Assuming the integer value is in the first column
+            Provider.of<UserData>(context, listen: false).setUserId(id as int);
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => DisplayScreen()),
+            );
+          }
         },
       );
     } else {

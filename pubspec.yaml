@@ -53,8 +53,16 @@ dev_dependencies:
 
   postgres: ^3.0.8
 
+  flutter_launcher_icons: ^0.13.1
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21
 
 # The following section is specific to Flutter packages.
 flutter:

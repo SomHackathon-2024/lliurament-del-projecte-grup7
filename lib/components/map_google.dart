@@ -1,10 +1,14 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hack24/models/language/strings.dart';
+import 'package:hack24/models/theme_provider.dart';
+import 'package:hack24/screens/pages/publication_screen.dart';
+import 'package:hack24/services/get/locations.dart';
+import 'package:provider/provider.dart';
 
 class MapSample extends StatefulWidget {
-  const MapSample({super.key});
+  const MapSample({Key? key}) : super(key: key);
 
   @override
   State<MapSample> createState() => MapSampleState();
@@ -12,55 +16,110 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
   final Completer<GoogleMapController> _controller =
-  Completer<GoogleMapController>();
+      Completer<GoogleMapController>();
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+  static const CameraPosition _mataro = CameraPosition(
+    target: LatLng(41.54211, 2.4445),
+    zoom: 13.5,
   );
 
-  static const CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  Set<Marker> _markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    getPoints();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-    );
-
-    /*return GoogleMap(
-      mapType: MapType.none,
-      initialCameraPosition: _kGooglePlex,
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-      },
-    );*/
-
-    /*return Scaffold(
+    return Scaffold(
       body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
+        mapType: MapType.normal,
+        initialCameraPosition: _mataro,
+        markers: _markers,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: const Text('To the lake!'),
-        icon: const Icon(Icons.directions_boat),
-      ),
-    );*/
+    );
   }
 
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    await controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+/*Future<void> getPoints() async {
+    List<dynamic> positions = await locations();
+
+    Set<Marker> markers = positions.map((position) {
+      double lat = positions[0][4];
+      double lon = positions[0][5];
+      LatLng pos = LatLng(lat, lon);
+
+      //if (lat is List<double> && lat.length >= 2) {
+        return Marker(
+          markerId: MarkerId(position.toString()),
+          position: pos,
+          infoWindow: InfoWindow(
+            title: 'Marker Title',
+            snippet: 'Marker Description',
+          ),
+        );
+      /*} else {
+        return null;
+      }*/
+    }).whereType<Marker>().toSet();
+
+    setState(() {
+      _markers = markers;
+    });
+  };*/
+
+  Future<void> getPoints() async {
+    List<dynamic> positions = await locations();
+    Set<Marker> markers = {};
+
+    print(positions);
+
+    for (var position in positions) {
+      print(position);
+      //if (position is List<double> && position.length >= 2) { not necessary, we already have the sql filter
+      print(position[4]);
+      print(position[5]);
+      double lat = position[4];
+      double lon = position[5];
+      LatLng pos = LatLng(lat, lon);
+
+      String desc = AppStrings.getString(
+          Provider.of<ThemeProvider>(context, listen: false).locale,
+          position[6].toString()
+      ) ?? position[6].toString();
+
+      Marker marker = Marker(
+        markerId: MarkerId(position[3].toString()),
+        position: pos,
+        infoWindow: InfoWindow(
+          title: position[0].toString(),
+          snippet: desc,
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) =>
+                    PublicationScreen(
+                      contingut: position[0].toString(),
+                      id: position[1] as int,
+                      linkImg: position[2].toString(),
+                      autor: position[3].toString(),
+                      titol: position[4].toString(),
+                    ),
+              ),
+            );
+          },
+        ),
+      );
+      markers.add(marker);
+      //}
+    }
+
+    setState(() {
+      _markers = markers;
+    });
   }
 }
